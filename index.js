@@ -5,7 +5,7 @@ const parseFn = require('parse-function');
 const app = parseFn();
 
 exports.handler = async function (event) {
-    const functionString = event.body;
+    const functionString = Buffer.from(event.body, 'base64').toString('utf8');
     let fn;
     
     try {
