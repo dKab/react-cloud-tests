@@ -1,29 +1,18 @@
 const suites = require('./suites');
-const acorn = require('acorn');
-const parseFn = require('parse-function');
 
-const app = parseFn();
+const { VM } = require('vm2');
 
 exports.handler = async function (event) {
     const functionString = Buffer.from(event.body, 'base64').toString('utf8');
-    let fn;
-    
-    try {
-        fn = app.parse(functionString, {
-            parse: acorn.parse,
-            ecmaVersion: 2017,
-        });
-    } catch (e) {
-        return getResponse({
-            status: 'Error',
-            error: 'Function Parsing error',
-        });
-    }
-    
-    let func = new Function(fn.args, fn.body);
+
+    let functionInSandbox = new VM().run(`
+            const inputFunction = ${functionString};
+
+            inputFunction;
+        `);
     
     const { suiteId } = event.queryStringParameters;
-    const result = testFunction(func, suiteId);
+    const result = testFunction(functionInSandbox, suiteId);
 
     return getResponse(result);
 };
