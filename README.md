@@ -2,8 +2,14 @@
 
 ## Adding new version of the function:
 
+Create an archive containing the source code and `package.json` and `package.json.lock` files:
 
-Create an archive containing the source code and `package.json` and `package.json.lock` files. Then run
+```
+rm -rf Archive.zip # to remove previously created Archives
+zip -r Archive . -x '*node_modules/*' -x '*.git/*' -x '.DS_store'
+```
+
+
 
 ```
 yc serverless function version create \

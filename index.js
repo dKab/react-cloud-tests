@@ -6,9 +6,7 @@ exports.handler = async function (event) {
     const functionString = Buffer.from(event.body, 'base64').toString('utf8');
 
     let functionInSandbox = new VM().run(`
-            const inputFunction = ${functionString};
-
-            inputFunction;
+           (${functionString});
         `);
     
     const { suiteId } = event.queryStringParameters;
